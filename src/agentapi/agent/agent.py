@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, APIRouter
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain_community.utilities import SQLDatabase
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
@@ -7,13 +7,12 @@ from langchain_deepseek import ChatDeepSeek
 
 from src.agentapi.utils.DbTool import mysqltool
 
-# 初始化 FastAPI 应用
-app = FastAPI()
+# 创建路由实例，设置前缀和标签
+router = APIRouter(prefix="/agent", tags=["agent"])
 
 # 初始化模型和数据库工具
 model = ChatDeepSeek(model="deepseek-chat", max_tokens=200)
-dburl = mysqltool.get_url()
-db = SQLDatabase.from_uri(dburl)
+db = SQLDatabase.from_uri(mysqltool.get_url())
 toolkit = SQLDatabaseToolkit(db=db, llm=model)
 tools = toolkit.get_tools()
 
@@ -37,7 +36,7 @@ agent_executor = chat_agent_executor.create_tool_calling_executor(
     tools,
 )
 
-@app.post("/query")
+@router.post("/query")
 async def query_database(question: str):
     """
     接收用户问题，调用 LangChain 代理执行 SQL 查询，并返回结果。
