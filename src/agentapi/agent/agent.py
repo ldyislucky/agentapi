@@ -5,7 +5,7 @@ from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from langgraph.prebuilt import chat_agent_executor
 from langchain_deepseek import ChatDeepSeek
 
-from src.agentapi.utils.DbTool import mysqltool
+from src.agentapi.utils.dbtool import mysqltool
 
 # 创建路由实例，设置前缀和标签
 router = APIRouter(prefix="/agent", tags=["agent"])
