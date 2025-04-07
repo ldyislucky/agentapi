@@ -64,4 +64,3 @@ async def query_database(question: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"处理失败: {str(e)}")
 
-# 启动命令：uvicorn src.agentapi.agent.Agent:app --reload
