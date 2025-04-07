@@ -66,4 +66,4 @@ class MysqlTool:
     def get_url(self):
         return f'mysql+mysqldb://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}?charset=utf8mb4'
 
-
+mysqltool = MysqlTool()
