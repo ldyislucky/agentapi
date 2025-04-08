@@ -1,5 +1,6 @@
 import mysql.connector
 from mysql.connector import Error
+import redis
 
 class MysqlTool:
     def __init__(self):
@@ -66,4 +67,12 @@ class MysqlTool:
     def get_url(self):
         return f'mysql+mysqldb://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}?charset=utf8mb4'
 
+
+
+redis_template = redis.Redis(
+    host='192.168.46.130',
+    port=6379,
+    password='123321',
+    decode_responses=True  # 自动解码返回值为字符串（默认是字节）
+)
 mysqltool = MysqlTool()
