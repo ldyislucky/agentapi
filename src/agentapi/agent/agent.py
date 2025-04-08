@@ -36,7 +36,7 @@ agent_executor = chat_agent_executor.create_tool_calling_executor(
     tools,
 )
 
-@router.post("/query")
+@router.post("/server")
 async def query_database(question: str):
     """
     接收用户问题，调用 LangChain 代理执行 SQL 查询，并返回结果。
