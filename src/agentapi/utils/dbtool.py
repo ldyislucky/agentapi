@@ -1,10 +1,7 @@
-# dbtool.py
 import mysql.connector
 from mysql.connector import Error
-import redis
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain_community.utilities import SQLDatabase
-from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from langgraph.prebuilt import chat_agent_executor
 from langchain_deepseek import ChatDeepSeek
 

@@ -1,7 +1,6 @@
-# agent.py
 from fastapi import HTTPException, APIRouter
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
-from src.agentapi.utils.dbtool import mysqltool, agent_tools
+from src.agentapi.utils.dbtool import agent_tools
 
 # 创建路由实例，设置前缀和标签
 router = APIRouter(prefix="/agent", tags=["agent"])
