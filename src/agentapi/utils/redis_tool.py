@@ -26,7 +26,7 @@ class RedisConversationMemory(ConversationBufferMemory):
         self._load_initial_history()
 
     def _load_initial_history(self):
-        # 从 Redis 加载历史对话
+        # 从 Redis 加载历史对话，获取列表中所有元素
         stored_messages = self.redis.lrange(f"chat:{self.session_id}", 0, -1)
         for msg in stored_messages[::-1]:  # Redis 列表是反向存储
             message_data = json.loads(msg)
@@ -53,8 +53,9 @@ class RedisConversationMemory(ConversationBufferMemory):
 
         # 使用 Pipeline 批量操作
         pipeline = self.redis.pipeline()
+        # 将消息添加到列表的开头，先添加 user_msg，再添加 ai_msg，Redis 列表是反向存储
         pipeline.lpush(f"chat:{self.session_id}", user_msg, ai_msg)
-        pipeline.ltrim(f"chat:{self.session_id}", 0, self.max_history * 2 - 1)  # 保留最近 N 轮
+        pipeline.ltrim(f"chat:{self.session_id}", 0, self.max_history * 2 - 1)  # 将列表截断为指定的索引范围，保留最近 N 轮
         pipeline.expire(f"chat:{self.session_id}", 86400)  # 24 小时过期
         pipeline.execute()
 
