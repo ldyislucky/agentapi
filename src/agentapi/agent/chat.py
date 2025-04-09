@@ -8,6 +8,8 @@ from langchain.schema import messages_to_dict, messages_from_dict, HumanMessage
 from pydantic import Field
 from langchain_core.runnables.history import RunnableWithMessageHistory
 import uuid
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
 
 # 设置 Redis 缓存
 redis_client = redis.Redis(
@@ -67,12 +69,6 @@ session_id = str(uuid.uuid4())  # 生成唯一会话 ID
 
 # 修改两处代码实现：
 
-# 1. 调整 RunnableWithMessageHistory 配置（新增输出解析）
-from langchain_core.messages import AIMessage
-from langchain_core.output_parsers import StrOutputParser
-
-# 修改模型调用链
-from langchain_core.prompts import ChatPromptTemplate
 
 chain = ChatPromptTemplate.from_messages([
     ("human", "{input}"),  # 使用模板接收字符串
