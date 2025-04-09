@@ -42,10 +42,16 @@ class RedisConversationMemory(ConversationBufferMemory):
         })
         self._redis_client.expire(self.session_key, 86400)  # 设置 24 小时 TTL
 
+    def add_messages(self, messages):
+        """Add new messages to the chat memory."""
+        for message in messages:
+            self.chat_memory.add_message(message)
+
     @property
     def messages(self):
         """Expose the messages attribute from chat_memory."""
         return self.chat_memory.messages
+
 
 # 使用 RunnableWithMessageHistory 替代 ConversationChain
 memory = RedisConversationMemory(
