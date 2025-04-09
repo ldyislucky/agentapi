@@ -69,10 +69,10 @@ class MysqlTool:
 
 
 
-redis_template = redis.Redis(
-    host='192.168.46.130',
-    port=6379,
-    password='123321',
-    decode_responses=True  # 自动解码返回值为字符串（默认是字节）
-)
+# redis_template = redis.Redis(
+#     host='192.168.46.130',
+#     port=6379,
+#     password='123321',
+#     decode_responses=True  # 自动解码返回值为字符串（默认是字节）
+# )
 mysqltool = MysqlTool()

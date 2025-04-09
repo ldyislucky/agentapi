@@ -4,8 +4,10 @@ import json
 from typing import Dict, Any
 from time import time
 from langchain.schema import HumanMessage, AIMessage
-from pydantic import BaseModel, Field
-
+from pydantic import  Field
+import redis
+from langchain.chains import ConversationChain
+from langchain_deepseek import ChatDeepSeek
 
 class RedisConversationMemory(ConversationBufferMemory):
     redis: Redis = Field(...)  # 必填字段
@@ -55,3 +57,27 @@ class RedisConversationMemory(ConversationBufferMemory):
         pipeline.ltrim(f"chat:{self.session_id}", 0, self.max_history * 2 - 1)  # 保留最近 N 轮
         pipeline.expire(f"chat:{self.session_id}", 86400)  # 24 小时过期
         pipeline.execute()
+
+
+
+
+redis_client = redis.Redis(
+    host='192.168.46.130',  # Redis服务器IP地址
+    port=6379,              # Redis服务器端口号
+    password='123321'       # Redis访问密码
+)
+
+def get_conversation_chain(session_id: str):
+    memory = RedisConversationMemory(
+        redis_client=redis_client,
+        session_id=session_id,
+        max_history=5  # 保留最近 5 轮对话
+    )
+
+    return ConversationChain(
+        llm=ChatDeepSeek(model="deepseek-chat", max_tokens=200),
+        memory=memory,
+        verbose=True
+    )
+
+
