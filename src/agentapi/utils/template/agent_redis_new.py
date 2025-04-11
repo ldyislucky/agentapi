@@ -43,7 +43,7 @@ tools = [
 ]
 
 # 加载基础 Prompt
-prompt = hub.pull("hwchase17/react")
+prompt = hub.pull("hwchase17/react-chat")
 print(prompt)
 
 # 初始化模型
@@ -65,11 +65,19 @@ agent_executor = AgentExecutor(
     memory=create_memory(session_id)           # `memory`
 )
 
-# # 运行Agent
-# response = agent_executor.invoke({"input": "10的平方是多少？"})
-# print(response["output"])  # 输出：10的平方是 100
+# 运行Agent
+response = agent_executor.invoke(
+    {
+        "input": "10的平方是多少？"
+    }
+)
+print(response["output"])  # 输出：10的平方是 100
 
 
 # 运行Agent
-response = agent_executor.invoke({"input": "我的第一个问题是？"})
+response = agent_executor.invoke(
+    {
+        "input": "我的第一个问题是？"
+    }
+)
 print(response["output"])  # 输出：10的平方是 100
