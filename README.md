@@ -36,10 +36,20 @@ prompt = hub.pull("hwchase17/react")
 model = ChatDeepSeek(model="deepseek-chat", max_tokens=200)
 
 # 创建 Agent
-agent = create_react_agent(model, tools, prompt)
+agent = create_react_agent(
+    model, 
+    tools, prompt)
 
 # 包装为执行器（添加容错逻辑）
-agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+# 必须在此阶段配置的参数
+agent_executor = AgentExecutor(
+    agent=agent,
+    tools=tools,
+    verbose=True,                               # `verbose`
+    max_iterations=5,                           # `max_iterations`
+    handle_parsing_errors=True,                 # `handle_parsing_errors`
+    memory=ConversationBufferMemory()           # `memory`
+)
 
 
 # 运行Agent
@@ -85,21 +95,21 @@ print(response["output"])  # 输出：10的平方是 100
 
 ### 三、关键参数详解
 
-#### 1. **核心参数**
+| 参数                    | 说明                         | 示例值                       |
+| ----------------------- | ---------------------------- | ---------------------------- |
+| `llm`                   | 必选，语言模型实例           | `ChatOpenAI(model="gpt-4")`  |
+| `tools`                 | 必选，Agent可调用的工具列表  | `[tool1, tool2]`             |
+| `memory`                | 记忆模块，保存对话历史       | `ConversationBufferMemory()` |
+| `verbose`               | 输出详细日志                 | `True`                       |
+| `max_iterations`        | 最大执行迭代次数，防无限循环 | `5`                          |
+| `handle_parsing_errors` | 解析错误时自动修复或提示     | `True`                       |
 
-| 参数                    | 说明                                  | 示例值                       |
-| ----------------------- | ------------------------------------- | ---------------------------- |
-| `llm`                   | 必选，语言模型实例                    | `ChatOpenAI(model="gpt-4")`  |
-| `tools`                 | 必选，Agent可调用的工具列表           | `[tool1, tool2]`             |
-| `agent_type`            | Agent类型（如ReAct、Structured Chat） | `"structured-chat-react"`    |
-| `memory`                | 记忆模块，保存对话历史                | `ConversationBufferMemory()` |
-| `verbose`               | 输出详细日志                          | `True`                       |
-| `max_iterations`        | 最大执行迭代次数，防无限循环          | `5`                          |
-| `handle_parsing_errors` | 解析错误时自动修复或提示              | `True`                       |
+#### 1. **Agent核心参数**
 
    - **`model`**: 必填，LLM 实例（如 `ChatOpenAI`、`ChatAnthropic`）。
    - **`tools`**: 必填，工具列表（`Tool` 对象或等效的 List）。
    - **`prompt`**: Agent 的提示模板，可通过 `hub.pull()` 加载预置模板或自定义。
+
      ```python
      from langchain.promorts import PromptTemplate
      prompt = PromptTemplate.from_template("...")
