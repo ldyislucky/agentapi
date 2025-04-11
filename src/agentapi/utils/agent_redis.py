@@ -40,7 +40,7 @@ def create_agent(session_id: str):
     return agent_executor
 
 # 示例会话流程
-session_id = "user_124"
+session_id = "user_125"
 agent = create_agent(session_id)
 
 # 第一次对话
@@ -55,7 +55,7 @@ print(response["output"])
 # 后续对话
 response = agent.invoke(
     {
-        "input": "Can you summarize my previous question?",
+        "input": "我的第一个问题是什么?",
         "chat_history": response.get("chat_history", [])  # 使用上一轮的聊天历史
     }
 )
