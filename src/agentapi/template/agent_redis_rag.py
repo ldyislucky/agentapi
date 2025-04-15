@@ -122,7 +122,7 @@ print(prompt)
 # 创建 Agent
 agent = create_react_agent(model, tools, prompt)
 
-session_id = "user_126"
+session_id = "user_127"
 
 # 包装为执行器（添加容错逻辑）
 # 必须在此阶段配置的参数
@@ -136,11 +136,11 @@ agent_executor = AgentExecutor(
 )
 
 # 4. 测试智能体
-question = "你们这里都有哪些套餐？"
+question = "你好？"
 result = agent_executor.invoke({"input": question})
 print(f"最终答案：{result['output']}")
 
-
-question = "这个套餐里都有啥？"
-result = agent_executor.invoke({"input": question})
-print(f"最终答案：{result['output']}")
+#
+# question = "这个套餐里都有啥？"
+# result = agent_executor.invoke({"input": question})
+# print(f"最终答案：{result['output']}")

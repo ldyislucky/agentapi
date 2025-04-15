@@ -1111,7 +1111,7 @@ description = "Lightweight in-process concurrent programming"
 optional = false
 python-versions = ">=3.7"
 groups = ["main"]
-markers = "python_version < \"3.14\" and (platform_machine == \"aarch64\" or platform_machine == \"ppc64le\" or platform_machine == \"x86_64\" or platform_machine == \"amd64\" or platform_machine == \"AMD64\" or platform_machine == \"win32\" or platform_machine == \"WIN32\")"
+markers = "python_version <= \"3.13\" and (platform_machine == \"aarch64\" or platform_machine == \"ppc64le\" or platform_machine == \"x86_64\" or platform_machine == \"amd64\" or platform_machine == \"AMD64\" or platform_machine == \"win32\" or platform_machine == \"WIN32\")"
 files = [
     {file = "greenlet-3.1.1-cp310-cp310-macosx_11_0_universal2.whl", hash = "sha256:0bbae94a29c9e5c7e4a2b7f0aae5c17e8e90acbfd3bf6270eeba60c39fce3563"},
     {file = "greenlet-3.1.1-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:0fde093fb93f35ca72a556cf72c92ea3ebfda3d79fc35bb19fbe685853869a83"},
@@ -3585,6 +3585,29 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 reference = "tuna"
 
 [[package]]
+name = "passlib"
+version = "1.7.4"
+description = "comprehensive password hashing framework supporting over 30 schemes"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "passlib-1.7.4-py2.py3-none-any.whl", hash = "sha256:aa6bca462b8d8bda89c70b382f0c298a20b5560af6cbfa2dce410c0a2fb669f1"},
+    {file = "passlib-1.7.4.tar.gz", hash = "sha256:defd50f72b65c5402ab2c573830a6978e5f202ad0d984793c8dde2c4152ebe04"},
+]
+
+[package.extras]
+argon2 = ["argon2-cffi (>=18.2.0)"]
+bcrypt = ["bcrypt (>=3.1.0)"]
+build-docs = ["cloud-sptheme (>=1.10.1)", "sphinx (>=1.6)", "sphinxcontrib-fulltoc (>=1.2.0)"]
+totp = ["cryptography"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "tuna"
+
+[[package]]
 name = "pillow"
 version = "11.2.1"
 description = "Python Imaging Library (Fork)"
@@ -4234,6 +4257,23 @@ files = [
 
 [package.extras]
 cli = ["click (>=5.0)"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+reference = "tuna"
+
+[[package]]
+name = "python-multipart"
+version = "0.0.20"
+description = "A streaming multipart parser for Python"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "python_multipart-0.0.20-py3-none-any.whl", hash = "sha256:8a62d3a8335e06589fe01f2a3e178cdcc632f3fbe0d492ad9ee0ec35aab1f104"},
+    {file = "python_multipart-0.0.20.tar.gz", hash = "sha256:8dd0cab45b8e23064ae09147625994d090fa46f5b0d1e13af944c331a7fa9d13"},
+]
 
 [package.source]
 type = "legacy"
@@ -6324,4 +6364,4 @@ reference = "tuna"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12, <4.0"
-content-hash = "2c6d57caf56e9c1e611243151b0ef0207b370261faf8432613a854737ed99f85"
+content-hash = "c3ce63c4f703781d0aa02fbdd6ce8a4af6e5bc11349fcabba4b60a4efa12581b"
