@@ -2,12 +2,15 @@ from fastapi import FastAPI
 
 from src.agentapi.agent.agent import router as agent_router
 from src.agentapi.agent.langchat import router as langchat_router
+from src.agentapi.agent.login import router as login_router
+
 # 创建主应用实例
 app = FastAPI()
 
 # 挂载子路由到主应用
 app.include_router(agent_router)
 app.include_router(langchat_router)
+app.include_router(login_router)
 
 @app.middleware("http")  # 声明这是一个 HTTP 中间件
 async def add_custom_header(request, call_next):

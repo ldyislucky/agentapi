@@ -4,6 +4,9 @@ from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain_community.utilities import SQLDatabase
 from langgraph.prebuilt import chat_agent_executor
 from langchain_deepseek import ChatDeepSeek
+import pymysql
+from dbutils.pooled_db import PooledDB
+
 
 class MysqlTool:
     def __init__(self):
@@ -29,7 +32,8 @@ class MysqlTool:
             )
             if self.conn.is_connected():
                 print("数据库连接成功")
-                self.cursor = self.conn.cursor()
+                # dictionary=True 将查询结果以 字典（Dictionary） 形式返回，而不是默认的 元组（Tuple） 形式。
+                self.cursor = self.conn.cursor(dictionary=True)
             else:
                 print("数据库连接失败")
         except Error as e:
@@ -100,3 +104,84 @@ class AgentTools:
         return mysqltool.get_url()
 
 agent_tools = AgentTools()
+
+
+
+class MySQLPool(object):
+    def __init__(self):
+        self.host = '127.0.0.1'
+        self.port = 3306
+        self.user = 'root'
+        self.password = 'root'
+        self.database = 'agent'
+        self.charset = 'utf8'
+
+        # 创建连接池
+        self.pool = PooledDB(
+            creator=pymysql,  # 使用PyMySQL驱动
+            maxconnections=5,  # 连接池最大连接数
+            mincached=2,  # 初始化时创建的连接数
+            blocking=True,  # 连接数不足时阻塞等待
+            host=self.host,
+            port=self.port,
+            user=self.user,
+            password=self.password,
+            database=self.database,
+            charset=self.charset,
+            autocommit=True  # 自动提交事务
+        )
+
+    def get_conn(self):
+        """获取数据库连接"""
+        return self.pool.connection()
+
+    def close(self):
+        """关闭连接池"""
+        self.pool.close()
+
+    def execute_query(self, sql, args=None):
+        """执行查询操作"""
+        conn = self.get_conn()
+        cursor = conn.cursor()
+        try:
+            cursor.execute(sql, args)
+            results = cursor.fetchall()
+            return results
+        finally:
+            cursor.close()
+            conn.close()
+
+    def execute_update(self, sql, args=None):
+        """执行更新操作"""
+        conn = self.get_conn()
+        cursor = conn.cursor()
+        try:
+            rows = cursor.execute(sql, args)
+            conn.commit()
+            return rows
+        except Exception as e:
+            conn.rollback()
+            raise e
+        finally:
+            cursor.close()
+            conn.close()
+
+mysql_pool = MySQLPool()
+
+# 使用示例
+if __name__ == '__main__':
+    mysql_pool = MySQLPool()
+
+    # 测试连接
+    try:
+        conn = mysql_pool.get_conn()
+        cursor = conn.cursor()
+        cursor.execute("SELECT VERSION()")
+        data = cursor.fetchone()
+        print("Database version:", data[0])
+    finally:
+        cursor.close()
+        conn.close()
+
+    # 关闭连接池（在程序退出时调用）
+    mysql_pool.close()
