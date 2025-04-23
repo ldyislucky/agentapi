@@ -1,8 +1,11 @@
-from fastapi import HTTPException, Response, APIRouter
+
+from fastapi import HTTPException, APIRouter
 import pymysql
 from src.agentapi.entity.user import UserRegister, UserLogin
 from src.agentapi.utils.dbtool import mysql_pool  # 使用修改后的连接池工具
 from src.agentapi.utils.login_utils import generate_captcha, get_password_hash, verify_password
+from fastapi.responses import JSONResponse
+import base64
 
 router = APIRouter(prefix="/agent", tags=["agent"])
 
@@ -22,11 +25,12 @@ def get_captcha():
                 captcha_id = cursor.lastrowid
                 conn.commit()  # 显式提交事务
 
-            return Response(
-                content=buffer.getvalue(),
-                media_type="image/png",
-                headers={"captcha_id": str(captcha_id)}
-            )
+        # 将图片数据编码为Base64
+        image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        image_data = f"data:image/png;base64,{image_base64}"
+
+        return JSONResponse(content={"image": image_data, "captcha_id": captcha_id})
+
     except pymysql.Error as e:
         raise HTTPException(status_code=500, detail=f"数据库错误: {str(e)}")
 
