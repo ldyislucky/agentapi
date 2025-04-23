@@ -3,9 +3,17 @@ from fastapi import FastAPI
 from src.agentapi.agent.agent import router as agent_router
 from src.agentapi.agent.langchat import router as langchat_router
 from src.agentapi.agent.login import router as login_router
+from fastapi.middleware.cors import CORSMiddleware
 
 # 创建主应用实例
 app = FastAPI()
+
+# 添加跨域中间件
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["*"]
+)
 
 # 挂载子路由到主应用
 app.include_router(agent_router)
