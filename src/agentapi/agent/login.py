@@ -29,7 +29,8 @@ def get_captcha():
         image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
         image_data = f"data:image/png;base64,{image_base64}"
 
-        return JSONResponse(content={"image": image_data, "captcha_id": captcha_id})
+        # 返回新的响应格式
+        return JSONResponse(content={"image": image_data, "text": code})
 
     except pymysql.Error as e:
         raise HTTPException(status_code=500, detail=f"数据库错误: {str(e)}")
