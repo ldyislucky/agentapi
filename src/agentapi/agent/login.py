@@ -1,20 +1,23 @@
 
 from fastapi import HTTPException, APIRouter
 import pymysql
+
+from src.agentapi.entity.result import create_response
 from src.agentapi.entity.user import UserRegister, UserLogin
 from src.agentapi.utils.dbtool import mysql_pool  # 使用修改后的连接池工具
 from src.agentapi.utils.login_utils import generate_captcha, get_password_hash, verify_password
-from fastapi.responses import JSONResponse
 import base64
+
+
+
 
 router = APIRouter(prefix="/agent", tags=["agent"])
 
-# 生成验证码端点
+# 验证码生成端点
 @router.get("/captcha")
 def get_captcha():
     code, buffer = generate_captcha()
     try:
-        # 使用with语句自动管理连接
         with mysql_pool.get_conn() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(
@@ -22,20 +25,16 @@ def get_captcha():
                     (code,)
                 )
                 captcha_id = cursor.lastrowid
-                conn.commit()  # 显式提交事务
+                conn.commit()
 
         # 将图片数据编码为Base64
         image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
         image_data = f"data:image/png;base64,{image_base64}"
 
-        # 返回新的响应格式
-        return JSONResponse(content={
-            "code": 200,
-            "message": "success",
-            "data": {
-                "image": image_data,
-                "text": code
-            }
+        # 使用封装函数返回响应
+        return create_response("验证码生成成功", data={
+            "image": image_data,
+            "text": code
         })
 
     except pymysql.Error as e:
@@ -80,13 +79,9 @@ def register(user: UserRegister):
                     (user.username, hashed_password)
                 )
                 conn.commit()
-                return {
-                    "code": 200,
-                    "message": "success",
-                    "data": {
-                        "message": "注册成功"
-                    }
-                }
+
+                # 使用封装函数返回响应
+                return create_response("注册成功")
 
     except pymysql.Error as e:
         conn.rollback()
@@ -98,7 +93,7 @@ def register(user: UserRegister):
 def login(user: UserLogin):
     try:
         with mysql_pool.get_conn() as conn:
-            with conn.cursor(pymysql.cursors.DictCursor) as cursor:  # 使用字典游标
+            with conn.cursor(pymysql.cursors.DictCursor) as cursor:
                 # 验证验证码
                 cursor.execute(
                     """SELECT * FROM captchas 
@@ -127,13 +122,9 @@ def login(user: UserLogin):
                     raise HTTPException(status_code=401, detail="用户名或密码错误")
 
                 conn.commit()
-                return {
-                    "code": 200,
-                    "message": "success",
-                    "data": {
-                        "message": "登录成功"
-                    }
-                }
+
+                # 使用封装函数返回响应
+                return create_response("登录成功")
 
     except pymysql.Error as e:
         conn.rollback()
