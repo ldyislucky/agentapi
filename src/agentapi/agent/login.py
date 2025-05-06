@@ -9,7 +9,6 @@ import base64
 
 router = APIRouter(prefix="/agent", tags=["agent"])
 
-
 # 生成验证码端点
 @router.get("/captcha")
 def get_captcha():
@@ -30,7 +29,14 @@ def get_captcha():
         image_data = f"data:image/png;base64,{image_base64}"
 
         # 返回新的响应格式
-        return JSONResponse(content={"image": image_data, "text": code})
+        return JSONResponse(content={
+            "code": 200,
+            "message": "success",
+            "data": {
+                "image": image_data,
+                "text": code
+            }
+        })
 
     except pymysql.Error as e:
         raise HTTPException(status_code=500, detail=f"数据库错误: {str(e)}")
@@ -74,7 +80,13 @@ def register(user: UserRegister):
                     (user.username, hashed_password)
                 )
                 conn.commit()
-                return {"message": "注册成功"}
+                return {
+                    "code": 200,
+                    "message": "success",
+                    "data": {
+                        "message": "注册成功"
+                    }
+                }
 
     except pymysql.Error as e:
         conn.rollback()
@@ -115,7 +127,13 @@ def login(user: UserLogin):
                     raise HTTPException(status_code=401, detail="用户名或密码错误")
 
                 conn.commit()
-                return {"message": "登录成功"}
+                return {
+                    "code": 200,
+                    "message": "success",
+                    "data": {
+                        "message": "登录成功"
+                    }
+                }
 
     except pymysql.Error as e:
         conn.rollback()
