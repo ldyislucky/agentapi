@@ -1,3 +1,4 @@
+import uvicorn
 from fastapi import FastAPI
 
 from src.agentapi.agent.agent import router as agent_router
@@ -38,6 +39,9 @@ def root():
     return {"message": "Welcome to the API"}
 
 
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)
 
 
 # 启动命令：uvicorn src.agentapi.main:app --reload
